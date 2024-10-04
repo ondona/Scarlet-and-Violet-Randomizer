@@ -95,7 +95,7 @@ def randomize_starter(config, pokemon_entry, check_forced_shiny: int, allowed_po
     if (check_forced_shiny == 0 and config['make_all_starters_shiny'] != "yes"
             and config['higher_chance_shiny'] == "yes"):
         shiny_chance = random.randint(1, sharedVar.boostedshiny)
-        if shiny_chance == 7:
+        if shiny_chance == 1:
             pokemon_entry['pokeData']['rareType'] = "RARE"
 
     # Change Pokeball

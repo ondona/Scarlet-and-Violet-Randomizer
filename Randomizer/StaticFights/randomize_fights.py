@@ -111,11 +111,23 @@ def randomize_specific_fight(pokedata, allowed_pokemon: list):
     pokedata['pokeData']['item'] = HelperFunctions.get_pokemon_item_form(choice, form_id)[0]
     pokedata['pokeData']['wazaType'] = "DEFAULT"
     shiny_change = random.randint(1, SharedVariables.boostedshiny)
-    if shiny_change == 7:
+    if shiny_change == 1:
         pokedata['pokeData']['rareType'] = "RARE"
     for i in range(1, 5):
         pokedata['pokeData'][f'waza{str(i)}']['wazaId'] = "WAZA_NULL"
     return pokedata
+
+
+def spoiler_statics_data(spoilers, mondata):
+    spoilers.write("\n"+mondata['label']+" = Lvl "+str(mondata['pokeData']['level'])+" "+HelperFunctions.get_monname(HelperFunctions.get_monid(mondata['pokeData']['devId']))+HelperFunctions.get_form_txt(mondata['pokeData']['formId']))
+    if mondata['pokeData']['rareType'] != 'NO_RARE':
+        if mondata['pokeData']['rareType'] =='RARE':
+            spoilers.write(" !!!SHINY!!!")
+        else:
+            spoilers.write(" "+mondata['pokeData']['rareType'])
+            
+    spoilers.write("\nTera: "+HelperFunctions.get_gem_txt(mondata['pokeData']['gemType']))
+    spoilers.write(" | "+HelperFunctions.basestat_txt(mondata['pokeData']['talentValue']))
 
 
 def randomize_static_fights(config):
@@ -174,6 +186,7 @@ def randomize_static_fights(config):
 
         allowed_pokemon, allowed_legends, bpl = HelperFunctions.check_generation_limiter(config['generation_limiter'])
         if config['randomize_all'] == "yes":
+            spoilers = HelperFunctions.spoilerlog("Statics")
             for i in range(0, len(file_json['values'])):
                 # Also all DLC Fights
                 if i == 31 or i == 32:
@@ -292,6 +305,7 @@ def randomize_static_fights(config):
                 #         file_json['values'][i]['pokeData'][f'waza{str(k)}']['wazaId'] = "WAZA_NULL"
                 else:
                     randomize_specific_fight(file_json['values'][i], allowed_pokemon)
+                spoiler_statics_data(spoilers, file_json['values'][i])
 
             outdata = json.dumps(file_json, indent=2)
             with open(os.getcwd() + "/Randomizer/StaticFights/" + "eventBattlePokemon_array.json", 'w') as outfile:
@@ -685,7 +699,7 @@ def randomize_static_fights(config):
             shutil.copyfile(os.getcwd() + "/Randomizer/Scenes/Misc/Sunflora/pokes_1.trsog",
                             os.getcwd() + "/output/romfs/" + paths['sunflora'] + 'pokes_1.trsog')
 
-
+        spoilers.close()
         print("Randomization Of Static Fights Pokemon Done!")
         return True
     return False
