@@ -11,6 +11,7 @@ def randomize_tms(config):
         movesfile = HelperFunctions.open_json_file('TMs/move_list.json')
         move_count = len(movesfile['moves']) - 1
         spoilers = HelperFunctions.spoilerlog("TM Changes")
+        SharedVariables.usedMoves = []
         for item in tmsfile['values']:
             if item['ItemType'] == "ITEMTYPE_WAZA" and item['Id'] != 1230:
                 rand = random.randint(0, move_count)
