@@ -799,6 +799,12 @@ def seedgen(fixed_seed):
     print("Seed is: ", seed)
     return seed
 
+def basestat_txt(stats):
+    if stats:
+        return "hp:"+str(stats['hp'])+" atk:"+str(stats['atk'])+" def:"+str(stats['def'])+" spAtk:"+str(stats['spAtk'])+" spDef:"+str(stats['spDef'])+" spe: "+str(stats['agi'])
+    else:
+        return "Stats error"
+
 def fix_config(config):
     if "shiny_boosted_rate" not in config:
         config["shiny_boosted_rate"] = 10
