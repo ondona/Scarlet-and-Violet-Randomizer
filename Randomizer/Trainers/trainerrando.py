@@ -3,6 +3,7 @@ import Randomizer.shared_Variables as SharedVariables
 import json
 import random
 import os
+import math
 
 # trid == rival_01_hono
 # ...._kusa
@@ -698,6 +699,7 @@ def make_poke(config, trainer_config, allowed_pokemon, banned_stages, trainer_li
             spoiler.write('Mon Count: '+str(max_amount-1))
             spoiler.write(' Can tera: '+str(trainers[i]["changeGem"]))
             spoiler.write(' Doubles: '+str(doubles)+'\n')
+        highest_lvl = 1
         for j in range(1, max_amount):
 
             pokemon_choice = random.randint(1, 1025)
@@ -722,8 +724,13 @@ def make_poke(config, trainer_config, allowed_pokemon, banned_stages, trainer_li
                 trainers[i][f"poke{str(j)}"]["item"] = item_choice
 
             if trainers[i][f"poke{str(j)}"]["level"] == 0:
-                trainers[i][f"poke{str(j)}"]["level"] = trainers[i]["poke1"]["level"] + random.randint(1, 7)
-
+                trainers[i][f"poke{str(j)}"]["level"] = highest_lvl
+            else:
+                if (trainer_config['all_trainers_settings']['boostlevels']):
+                    trainers[i][f"poke{str(j)}"]["level"] = get_boosted_level(trainers[i][f"poke{str(j)}"]["level"])
+            #store highest lvl mon trainer has to use for extras added
+            if trainers[i][f"poke{str(j)}"]["level"] > highest_lvl:
+                highest_lvl = trainers[i][f"poke{str(j)}"]["level"]
             trainers[i][f"poke{str(j)}"]["wazaType"] = "DEFAULT"
 
             for k in range(1, 5):
@@ -750,13 +757,13 @@ def make_poke(config, trainer_config, allowed_pokemon, banned_stages, trainer_li
             # Changes to shinyness
             shiny = 0
             if trainer_config['all_trainers_settings']['allow_shiny_pokemon'] == "yes":
-                shiny = random.randint(1, 10)
-                if shiny == 7:
+                shiny = random.randint(1, SharedVariables.boostedshiny)
+                if shiny == 1:
                     trainers[i][f"poke{str(j)}"]["rareType"] = "RARE"
                     
             if spoiler:
                 spoiler.write('\n'+str(j)+". Lvl: "+str(trainers[i][f"poke{str(j)}"]["level"]))
-                if shiny == 7:
+                if shiny == 1:
                     spoiler.write(' **Shiny!**')
                 spoiler.write(' '+HelperFunctions.get_monname(pokemon_choice))
                 if form_choice != 0:
@@ -793,9 +800,28 @@ def set_banned_stages(config, banned_check: str):
         list_of_banned.extend(SharedVariables.no_evolution)
     return list_of_banned
 
+def calc_boosted_vars(config):
+    min_i = config["boost_min"]
+    if min_i < 0.1:
+        min_i = 0.1
+    max_i = config["boost_max"]
+    if max_i < 0.1:
+        max_i = 0.1
+    print("setting boosted lvl range: "+str(min_i)+" - "+str(max_i))
+    SharedVariables.boosted_lvl_b = pow(max_i, (1/(100-max_i)))
+    SharedVariables.boosted_lvl_a = min_i/ SharedVariables.boosted_lvl_b
+    SharedVariables.boosted_lvl_b = round( SharedVariables.boosted_lvl_b, 4)
+    SharedVariables.boosted_lvl_a = round( SharedVariables.boosted_lvl_a, 4)
 
+def get_boosted_level(orig_lvl):
+    new_lvl = orig_lvl+math.floor(SharedVariables.boosted_lvl_a*pow(SharedVariables.boosted_lvl_b, orig_lvl))
+    if new_lvl > 100:
+        new_lvl = 100
+    return new_lvl
+    
 def randomize_trainers(config):
     if config['use_paldea_settings_for_all'] == "yes":
+        calc_boosted_vars(config['paldea_settings']['trainers_randomizer']["all_trainers_settings"])
         if config['paldea_settings']['trainers_randomizer']['is_enabled'] == "yes":
             spoilers = HelperFunctions.spoilerlog("Trainers")
             file = open(os.getcwd() + "/Randomizer/Trainers/" +"trdata_array_clean.json", "r")
@@ -912,6 +938,7 @@ def randomize_trainers(config):
                 config['paldea_settings']['trainers_randomizer']
                 ['all_trainers_settings']['generation_limiter'])
 
+            calc_boosted_vars(config['paldea_settings']['trainers_randomizer']["all_trainers_settings"])
             if config['paldea_settings']['trainers_randomizer']['rival_randomizer']['is_enabled'] == "yes":
                 allowed_pokemon = set_allowed_pokemon(config['paldea_settings']['trainers_randomizer'],
                                                       'rival_randomizer', allowed_pokemon)
@@ -993,6 +1020,7 @@ def randomize_trainers(config):
                 config['kitakami_settings']['trainers_randomizer']
                 ['all_trainers_settings']['generation_limiter'])
 
+            calc_boosted_vars(config['kitakami_settings']['trainers_randomizer']["all_trainers_settings"])
             if config['kitakami_settings']['trainers_randomizer']['important_trainers_randomizer']['is_enabled'] == "yes":
                 list_to_check = randomize_kieran_su1()
                 list_to_check.extend(randomize_carmine_su1())
@@ -1050,7 +1078,7 @@ def randomize_trainers(config):
             allowed_pokemon, allowed_legends, bpl = HelperFunctions.check_generation_limiter(
                 config['blueberry_settings']['trainers_randomizer']
                 ['all_trainers_settings']['generation_limiter'])
-
+            calc_boosted_vars(config['blueberry_settings']['trainers_randomizer']["all_trainers_settings"])
             if config['blueberry_settings']['trainers_randomizer']['important_trainers_randomizer']['is_enabled'] == "yes":
                 list_to_check = randomize_kieran_su2()
                 list_to_check.extend(randomize_carmine_su2())

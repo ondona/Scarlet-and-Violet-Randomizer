@@ -118,8 +118,15 @@
         "allow_shiny_pokemon": "yes",
         "randomnly_choose_single_or_doubles": "no",
         "only_double_battles": "no",
+		"boostlevels": "yes",
+		"boost_min": 1,
+		"boost_max": 10,
         "_comment": "working on similar BST option",
-        "_comment1": "missing option to have rival starter evolve"
+        "_comment1": "missing option to have rival starter evolve",
+        "_comment2": "boostlevels works on a range, scaling up from lvl 1 to (100 minus boost_max)",
+        "_comment3": "a range of 1 to 10 will mean at lvl 1 they get +1 scaling to at 90 they get +10",
+        "_comment4": "a range of 3 to 25 will mean at lvl 1 they get +3 scaling to at 75 they get +25"
+		
       },
       "rival_randomizer": {
         "_comment": "Includes: Penny, All of TS, Arven, Clavell, and Nemona",
@@ -234,6 +241,9 @@
         "allow_shiny_pokemon": "no",
         "randomnly_choose_single_or_doubles": "no",
         "only_double_battles": "no",
+		"boostlevels": "yes",
+		"boost_min": 1,
+		"boost_max": 10,
         "_comment": "working on similar BST option"
       },
       "important_trainers_randomizer": {
@@ -327,6 +337,9 @@
         "allow_shiny_pokemon": "no",
         "randomnly_choose_single_or_doubles": "no",
         "only_double_battles": "no",
+		"boostlevels": "yes",
+		"boost_min": 1,
+		"boost_max": 10,
         "_comment": "working on similar BST option"
       },
       "important_trainers_randomizer": {

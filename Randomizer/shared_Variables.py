@@ -446,3 +446,5 @@ monids = {}
 tera_types_eng = ['Normal', 'Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel', 'Fire', 'Water', 'Grass',
               'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy', 'Stellar']
 boostedshiny = 4096
+boosted_lvl_b = 1.0214
+boosted_lvl_a = 0.979
