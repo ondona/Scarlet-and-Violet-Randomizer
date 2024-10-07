@@ -804,9 +804,13 @@ def calc_boosted_vars(config):
     min_i = config["boost_min"]
     if min_i < 0.1:
         min_i = 0.1
+    if min_i > 99:
+        min_i = 99
     max_i = config["boost_max"]
     if max_i < 0.1:
         max_i = 0.1
+    if max_i > 99:
+        max_i = 99
     print("setting boosted lvl range: "+str(min_i)+" - "+str(max_i))
     SharedVariables.boosted_lvl_b = pow(max_i, (1/(100-max_i)))
     SharedVariables.boosted_lvl_a = min_i/ SharedVariables.boosted_lvl_b
